@@ -1,0 +1,84 @@
+#!/bin/bash
+set -euo pipefail
+dnf install -y nginx
+
+cat > /etc/nginx/conf.d/site.conf <<'NGINX'
+server {
+    listen 80;
+    server_name ${domain} www.${domain};
+    root /usr/share/nginx/html;
+    index index.html;
+}
+NGINX
+systemctl enable --now nginx
+
+# İlk açılışta bucket boş olabilir; içerik CI'ın SSM komutuyla gelir.
+find /usr/share/nginx/html -xtype l -delete
+aws s3 sync "s3://${bucket}/" /usr/share/nginx/html/ --delete --only-show-errors || true
+
+# certbot: paket deposunda yoksa resmi pip kurulumu.
+dnf install -y certbot python3-certbot-nginx || {
+  dnf install -y python3-pip
+  python3 -m venv /opt/certbot
+  /opt/certbot/bin/pip install --quiet certbot certbot-nginx
+  ln -sf /opt/certbot/bin/certbot /usr/bin/certbot
+}
+
+# DNS bu sunucuya dönene kadar 5 dakikada bir dener; sertifika alınınca kendini kapatır.
+cat > /usr/local/bin/enable-https <<'SCRIPT'
+#!/bin/bash
+set -euo pipefail
+DOMAIN="${domain}"
+EMAIL="${email}"
+if [ -d "/etc/letsencrypt/live/$DOMAIN" ]; then
+  systemctl disable --now enable-https.timer
+  exit 0
+fi
+TOKEN=$(curl -sf -X PUT http://169.254.169.254/latest/api/token -H "X-aws-ec2-metadata-token-ttl-seconds: 60")
+IP=$(curl -sf -H "X-aws-ec2-metadata-token: $TOKEN" http://169.254.169.254/latest/meta-data/public-ipv4)
+for HOST in "$DOMAIN" "www.$DOMAIN"; do
+  if ! getent ahostsv4 "$HOST" | awk '{print $1}' | grep -qx "$IP"; then
+    echo "$HOST henüz $IP adresine dönmüyor, bekleniyor"
+    exit 0
+  fi
+done
+if [ -n "$EMAIL" ]; then ACCOUNT=(-m "$EMAIL"); else ACCOUNT=(--register-unsafely-without-email); fi
+certbot --nginx -n --agree-tos "$${ACCOUNT[@]}" -d "$DOMAIN" -d "www.$DOMAIN" --redirect
+systemctl disable --now enable-https.timer
+SCRIPT
+chmod +x /usr/local/bin/enable-https
+
+cat > /etc/systemd/system/enable-https.service <<'UNIT'
+[Unit]
+Description=DNS hazir olunca Let's Encrypt sertifikasi al
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/enable-https
+UNIT
+cat > /etc/systemd/system/enable-https.timer <<'UNIT'
+[Timer]
+OnBootSec=1min
+OnUnitActiveSec=5min
+[Install]
+WantedBy=timers.target
+UNIT
+
+# Sertifika 90 günlük; certbot süresi 30 günden az kalanı yeniler.
+cat > /etc/systemd/system/certbot-renew-site.service <<'UNIT'
+[Unit]
+Description=Let's Encrypt sertifikasini yenile
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/certbot renew -q --deploy-hook "systemctl reload nginx"
+UNIT
+cat > /etc/systemd/system/certbot-renew-site.timer <<'UNIT'
+[Timer]
+OnCalendar=*-*-* 03,15:00:00
+RandomizedDelaySec=1h
+Persistent=true
+[Install]
+WantedBy=timers.target
+UNIT
+
+systemctl daemon-reload
+systemctl enable --now enable-https.timer certbot-renew-site.timer

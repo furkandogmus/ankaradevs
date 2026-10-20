@@ -1,0 +1,61 @@
+name: members
+
+on:
+  pull_request:
+    paths: ["members/**"]
+  push:
+    branches: [main]
+    paths: ["members/**"]
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      # Doğrulayıcı base branch'ten alınır: PR scripts/ klasörünü değiştirerek kontrolleri atlatamaz.
+      - name: Üye dosyasını doğrula
+        env:
+          PR_AUTHOR: ${{ github.event.pull_request.user.login }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: |
+          git show "$BASE_SHA:scripts/validate-members.mjs" > "$RUNNER_TEMP/validate-members.mjs"
+          node "$RUNNER_TEMP/validate-members.mjs"
+
+  build:
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - run: node scripts/validate-members.mjs
+
+      - run: node scripts/build-members.mjs
+
+      # GITHUB_TOKEN ile yapılan commit yeni bir workflow tetiklemez.
+      - name: members.json'ı yayınla
+        run: |
+          git diff --quiet site/members.json && { echo "Değişiklik yok"; exit 0; }
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add site/members.json
+          git commit -m "Üye listesini güncelle"
+          git push

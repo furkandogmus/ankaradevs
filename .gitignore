@@ -1,0 +1,10 @@
+.terraform/
+*.tfstate*
+tfplan
+*_accessKeys.csv
+*.csv
+*.patch
+.agents/
+.claude/
+skills-lock.json
+.DS_Store

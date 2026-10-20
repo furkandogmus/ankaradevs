@@ -1,0 +1,299 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AnkaraDevs — Ankara'nın Yazılımcı Topluluğu</title>
+  <meta name="description" content="AnkaraDevs: Ankara'daki yazılımcıları meetup'lar, lightning talk'lar, atölyeler ve hack night'larla bir araya getiren gönüllü topluluk.">
+  <meta property="og:title" content="AnkaraDevs — Ankara'nın Yazılımcı Topluluğu">
+  <meta property="og:description" content="Meetup'lar, atölyeler, hack night'lar. Ankara'da kod yazan herkese açık.">
+  <meta property="og:url" content="https://ankaradevs.com/">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>{}</text></svg>">
+  <style>
+    :root {
+      --bg: #0b0f17; --surface: #121826; --surface-2: #171f30; --text: #e7ecf3; --muted: #94a0b4;
+      --accent: #f5b301; --accent-2: #3dd6c6; --border: #222b3d;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+    a { color: inherit; text-decoration: none; }
+    .wrap { max-width: 1080px; margin: 0 auto; padding: 0 20px; }
+
+    header { position: sticky; top: 0; background: rgba(11,15,23,.85); backdrop-filter: blur(8px); border-bottom: 1px solid var(--border); z-index: 10; }
+    nav { display: flex; align-items: center; justify-content: space-between; height: 64px; }
+    .logo { font-weight: 800; font-size: 1.25rem; letter-spacing: -.02em; }
+    .logo span { color: var(--accent); }
+    nav ul { display: flex; gap: 24px; list-style: none; color: var(--muted); font-size: .95rem; }
+    nav ul a:hover { color: var(--text); }
+
+    .hero { padding: 100px 0 80px; text-align: center; }
+    .tag { display: inline-block; padding: 6px 14px; border: 1px solid var(--border); border-radius: 999px; color: var(--accent-2); font-size: .85rem; margin-bottom: 24px; }
+    h1 { font-size: clamp(2.3rem, 6vw, 4rem); line-height: 1.1; letter-spacing: -.03em; margin-bottom: 20px; }
+    h1 em { font-style: normal; color: var(--accent); }
+    .lead { max-width: 640px; margin: 0 auto 36px; color: var(--muted); font-size: 1.15rem; }
+    .btns { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+    .btn { display: inline-block; padding: 13px 26px; border-radius: 10px; font-weight: 600; }
+    .btn.primary { background: var(--accent); color: #111; }
+    .btn.ghost { border: 1px solid var(--border); }
+    .btn:hover { opacity: .9; }
+
+    .pillars { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-top: 64px; }
+    .pillar { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 18px; text-align: left; }
+    .pillar b { display: block; color: var(--accent-2); font-size: 1.05rem; }
+    .pillar small { color: var(--muted); }
+
+    section { padding: 80px 0; }
+    section.alt { background: var(--surface-2); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+    h2 { font-size: 2rem; letter-spacing: -.02em; margin-bottom: 12px; }
+    .sub { color: var(--muted); margin-bottom: 40px; max-width: 680px; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 18px; }
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 26px; }
+    .card .ico { font-size: 1.6rem; margin-bottom: 12px; }
+    .card h3 { margin-bottom: 8px; font-size: 1.1rem; }
+    .card p { color: var(--muted); font-size: .95rem; }
+
+    .events { display: grid; gap: 14px; }
+    .event { display: grid; grid-template-columns: 110px 1fr auto; gap: 20px; align-items: center; background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 20px 24px; }
+    .event .when { text-align: center; border-right: 1px solid var(--border); padding-right: 16px; }
+    .event .when b { display: block; font-size: 1.1rem; color: var(--accent); }
+    .event .when small { color: var(--muted); font-size: .8rem; }
+    .event h3 { font-size: 1.1rem; margin-bottom: 4px; }
+    .event p { color: var(--muted); font-size: .95rem; }
+    .chips { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+    .chip { font-size: .75rem; padding: 2px 10px; border-radius: 999px; border: 1px solid var(--border); color: var(--accent-2); }
+    .note { color: var(--muted); font-size: .85rem; margin-top: 16px; }
+
+    .agenda { list-style: none; border-left: 2px solid var(--border); margin-left: 8px; }
+    .agenda li { position: relative; padding: 0 0 22px 26px; }
+    .agenda li::before { content: ""; position: absolute; left: -7px; top: 6px; width: 12px; height: 12px; border-radius: 50%; background: var(--accent); }
+    .agenda time { color: var(--accent-2); font-weight: 600; font-variant-numeric: tabular-nums; margin-right: 10px; }
+    .agenda span { color: var(--muted); }
+    .two { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: start; }
+
+    .topics { display: flex; flex-wrap: wrap; gap: 10px; }
+    .topics span { padding: 8px 16px; border-radius: 999px; background: var(--surface); border: 1px solid var(--border); font-size: .95rem; }
+
+    details { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 16px 20px; margin-bottom: 12px; }
+    summary { cursor: pointer; font-weight: 600; }
+    details p { color: var(--muted); margin-top: 10px; }
+
+    .cta { text-align: center; background: linear-gradient(135deg, #1a2234, #121826); border: 1px solid var(--border); border-radius: 20px; padding: 60px 24px; }
+    .cta p { color: var(--muted); margin: 0 auto 28px; max-width: 560px; }
+
+    footer { border-top: 1px solid var(--border); padding: 30px 0; color: var(--muted); font-size: .9rem; }
+    footer .wrap { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+
+    @media (max-width: 760px) {
+      nav ul { display: none; }
+      .pillars { grid-template-columns: 1fr 1fr; }
+      .two { grid-template-columns: 1fr; gap: 32px; }
+      .event { grid-template-columns: 1fr; gap: 10px; }
+      .event .when { text-align: left; border-right: 0; padding-right: 0; display: flex; gap: 10px; align-items: baseline; }
+      .hero { padding: 70px 0 60px; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <nav class="wrap">
+      <a class="logo" href="#">Ankara<span>Devs</span></a>
+      <ul>
+        <li><a href="#etkinlikler">Etkinlikler</a></li>
+        <li><a href="/uyeler/">Üyeler</a></li>
+        <li><a href="#formatlar">Formatlar</a></li>
+        <li><a href="#konusmaci">Konuşmacı Ol</a></li>
+        <li><a href="#sss">SSS</a></li>
+        <li><a href="#katil">Katıl</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <div class="hero wrap">
+      <div class="tag">🚀 Ankara'nın gönüllü yazılımcı topluluğu</div>
+      <h1>Ayda bir akşam,<br>kod ve <em>çay</em> eşliğinde.</h1>
+      <p class="lead">AnkaraDevs, şehirdeki geliştiricileri meetup'lar, lightning talk'lar, uygulamalı atölyeler ve hack night'larla bir araya getirir. Öğrenci, junior, kıdemli fark etmez. Ücretsiz ve herkese açık.</p>
+      <div class="btns">
+        <a class="btn primary" href="#etkinlikler">Yaklaşan Etkinlikler</a>
+        <a class="btn ghost" href="#konusmaci">Konuşmacı Ol</a>
+      </div>
+      <div class="pillars">
+        <div class="pillar"><b>Meetup</b><small>Ayda bir teknik sunum akşamı</small></div>
+        <div class="pillar"><b>Atölye</b><small>Laptop'ını getir, birlikte yapalım</small></div>
+        <div class="pillar"><b>Hack Night</b><small>Açık kaynak ve yan projeler</small></div>
+        <div class="pillar"><b>Ücretsiz</b><small>Gönüllüler ve ev sahipleriyle</small></div>
+      </div>
+    </div>
+
+    <section id="etkinlikler" class="alt">
+      <div class="wrap">
+        <h2>Yaklaşan Etkinlikler</h2>
+        <p class="sub">İlk dönem programımız. Kesin tarih ve mekânlar kayıt açıldığında duyurulur.</p>
+        <div class="events">
+          <article class="event">
+            <div class="when"><b>Kasım</b><small>Meetup #1</small></div>
+            <div>
+              <h3>Sıfırdan Canlıya: Bir Siteyi Bulutta Yayınlamak</h3>
+              <p>Bir landing sayfasını EC2, nginx ve Let's Encrypt ile yayına alıyoruz. Ardından aynı işi Terraform ve GitHub Actions ile tekrarlıyoruz.</p>
+              <div class="chips"><span class="chip">AWS</span><span class="chip">Terraform</span><span class="chip">CI/CD</span></div>
+            </div>
+            <a class="btn ghost" href="#katil">Haber ver</a>
+          </article>
+          <article class="event">
+            <div class="when"><b>Kasım</b><small>Lightning Talks</small></div>
+            <div>
+              <h3>5 Dakika, 1 Fikir</h3>
+              <p>Bir akşamda 8 konuşmacı, her biri 5 dakika. Bir kütüphane, bir hata hikâyesi, bir araç önerisi. İlk kez sahneye çıkmak için ideal.</p>
+              <div class="chips"><span class="chip">Açık sahne</span><span class="chip">Her seviye</span></div>
+            </div>
+            <a class="btn ghost" href="#konusmaci">Başvur</a>
+          </article>
+          <article class="event">
+            <div class="when"><b>Aralık</b><small>Atölye</small></div>
+            <div>
+              <h3>Docker ve Kubernetes'e Giriş</h3>
+              <p>Bir uygulamayı container'a koyup lokal bir cluster'da ayağa kaldırıyoruz. Kontenjan sınırlı, laptop gerekli.</p>
+              <div class="chips"><span class="chip">Container</span><span class="chip">DevOps</span><span class="chip">Uygulamalı</span></div>
+            </div>
+            <a class="btn ghost" href="#katil">Haber ver</a>
+          </article>
+          <article class="event">
+            <div class="when"><b>Aralık</b><small>Hack Night</small></div>
+            <div>
+              <h3>Açık Kaynak Katkı Gecesi</h3>
+              <p>"good first issue" avı. Mentorlar ilk PR'ını açmana yardım eder. Pizza bizden.</p>
+              <div class="chips"><span class="chip">Open Source</span><span class="chip">Mentorluk</span></div>
+            </div>
+            <a class="btn ghost" href="#katil">Haber ver</a>
+          </article>
+          <article class="event">
+            <div class="when"><b>Ocak</b><small>Panel</small></div>
+            <div>
+              <h3>Kariyer Gecesi: İlk İşten Kıdemliye</h3>
+              <p>Junior'lar için CV ve mülakat, kıdemliler için teknik liderlik. Soru-cevap ağırlıklı, sunumsuz bir akşam.</p>
+              <div class="chips"><span class="chip">Kariyer</span><span class="chip">Mentorluk</span></div>
+            </div>
+            <a class="btn ghost" href="#katil">Haber ver</a>
+          </article>
+        </div>
+        <p class="note">Bir konu önermek ya da etkinliğe mekân sağlamak ister misin? <a href="#katil" style="color:var(--accent)">Bize yaz.</a></p>
+      </div>
+    </section>
+
+    <section id="formatlar">
+      <div class="wrap">
+        <h2>Etkinlik Formatlarımız</h2>
+        <p class="sub">Farklı öğrenme biçimleri için farklı formatlar. Hepsinde ortak nokta: dinlemek kadar konuşmak da serbest.</p>
+        <div class="grid">
+          <div class="card"><div class="ico">🎤</div><h3>Meetup</h3><p>İki adet 25 dakikalık teknik sunum ve soru-cevap. Ardından networking.</p></div>
+          <div class="card"><div class="ico">⚡</div><h3>Lightning Talks</h3><p>5 dakikalık kısa konuşmalar. Slayt opsiyonel, fikir zorunlu.</p></div>
+          <div class="card"><div class="ico">🛠️</div><h3>Atölye</h3><p>2–3 saatlik uygulamalı oturum. Önceden kurulum rehberi paylaşılır.</p></div>
+          <div class="card"><div class="ico">🍕</div><h3>Hack Night</h3><p>Herkes kendi projesine ya da ortak bir açık kaynak projeye çalışır.</p></div>
+          <div class="card"><div class="ico">☕</div><h3>Coffee &amp; Code</h3><p>Hafta sonu sabahı bir kafede, gündemsiz, laptop'la buluşma.</p></div>
+          <div class="card"><div class="ico">📚</div><h3>Okuma Grubu</h3><p>Bir teknik kitabı bölüm bölüm birlikte okuyup tartışıyoruz.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="alt">
+      <div class="wrap two">
+        <div>
+          <h2>Bir Meetup Akşamı</h2>
+          <p class="sub">Hafta içi, iş çıkışı. Tipik bir akşamın akışı:</p>
+          <ol class="agenda">
+            <li><time>18:30</time>Kapılar açılır <span>· çay, kahve, tanışma</span></li>
+            <li><time>19:00</time>Açılış ve duyurular <span>· iş ilanları, topluluk haberleri</span></li>
+            <li><time>19:10</time>Sunum 1 <span>· 25 dk + soru-cevap</span></li>
+            <li><time>19:50</time>Ara <span>· networking</span></li>
+            <li><time>20:10</time>Sunum 2 <span>· 25 dk + soru-cevap</span></li>
+            <li><time>20:50</time>Açık sohbet <span>· isteyen için after-meetup</span></li>
+          </ol>
+        </div>
+        <div>
+          <h2>Konuştuğumuz Konular</h2>
+          <p class="sub">Gündemi topluluk belirler. Şimdiye kadar en çok istenenler:</p>
+          <div class="topics">
+            <span>Backend</span><span>Frontend</span><span>Mobil</span><span>Bulut &amp; DevOps</span>
+            <span>Kubernetes</span><span>Veri &amp; Yapay Zekâ</span><span>Güvenlik</span><span>Oyun Geliştirme</span>
+            <span>Açık Kaynak</span><span>Yazılım Mimarisi</span><span>Test &amp; Kalite</span><span>Kariyer</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="uyeler">
+      <div class="wrap">
+        <div class="cta" style="text-align:left; display:flex; justify-content:space-between; align-items:center; gap:24px; flex-wrap:wrap; padding:40px">
+          <div>
+            <h2>Topluluk Üyeleri</h2>
+            <p style="margin:0">Ankara'da kim ne geliştiriyor? Üyelerin kendi ekledikleri profiller, becerileri, GitHub ve LinkedIn bağlantıları. Mentor, konuşmacı ya da ekip arkadaşı bul.</p>
+          </div>
+          <div class="btns">
+            <a class="btn primary" href="/uyeler/">Üyeleri gör</a>
+            <a class="btn ghost" href="/uyeler/#katil">Kendini ekle</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="konusmaci" style="padding-top:0">
+      <div class="wrap">
+        <h2>Konuşmacı Ol</h2>
+        <p class="sub">Uzman olmana gerek yok. Geçen ay öğrendiğin bir şey, başkası için bu ayın en faydalı konuşması olabilir.</p>
+        <div class="grid">
+          <div class="card"><div class="ico">1️⃣</div><h3>Konunu gönder</h3><p>Başlık, 3–4 cümlelik özet ve format (meetup, lightning ya da atölye).</p></div>
+          <div class="card"><div class="ico">2️⃣</div><h3>Birlikte hazırlayalım</h3><p>İlk kez konuşacaklar için prova ve slayt geri bildirimi.</p></div>
+          <div class="card"><div class="ico">3️⃣</div><h3>Sahne senin</h3><p>Kayıt ve slaytlar, izin verirsen topluluk kanallarında paylaşılır.</p></div>
+        </div>
+        <div class="btns" style="margin-top:32px; justify-content:flex-start">
+          <a class="btn primary" href="mailto:merhaba@ankaradevs.com?subject=Konu%C5%9Fmac%C4%B1%20ba%C5%9Fvurusu">Konu öner</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="alt">
+      <div class="wrap">
+        <h2>Davranış Kuralları</h2>
+        <p class="sub">AnkaraDevs herkes için güvenli ve kapsayıcı bir alan. Etkinliklerimizde ve çevrim içi kanallarımızda:</p>
+        <div class="grid">
+          <div class="card"><h3>Saygılı ol</h3><p>Taciz, ayrımcılık ve kişisel saldırıya tolerans yok.</p></div>
+          <div class="card"><h3>Soru sormak serbest</h3><p>"Basit soru" yoktur; kimse bilmediği için küçümsenmez.</p></div>
+          <div class="card"><h3>Satış değil paylaşım</h3><p>Sunumlar teknik içerik içindir, ürün tanıtımı için değil.</p></div>
+        </div>
+        <p class="note">Bir sorun yaşarsan organizatörlerden birine ya da merhaba@ankaradevs.com adresine haber ver. Bildirimler gizli tutulur.</p>
+      </div>
+    </section>
+
+    <section id="sss">
+      <div class="wrap">
+        <h2 style="margin-bottom:28px">Sık Sorulan Sorular</h2>
+        <details><summary>Katılım ücretli mi?</summary><p>Hayır. Etkinliklerimiz ücretsizdir. Mekân ve ikramlar gönüllü ev sahipleri ile destekçilerden gelir.</p></details>
+        <details><summary>Yeni başlayanlar katılabilir mi?</summary><p>Kesinlikle. Öğrenciler ve kariyerinin başındakiler topluluğun önemli bir parçası. Atölyeler ve hack night'lar özellikle başlangıç dostudur.</p></details>
+        <details><summary>Etkinlikler nerede yapılıyor?</summary><p>Ankara'daki şirket ofisleri, teknoparklar ve üniversite salonlarında. Mekân her etkinlik duyurusunda paylaşılır.</p></details>
+        <details><summary>Şirketimiz ev sahipliği ya da destek yapabilir mi?</summary><p>Evet, çok seviniriz. 40–80 kişilik bir salon, projeksiyon ve internet yeterli. Bize yazın.</p></details>
+        <details><summary>Sunumlar kaydediliyor mu?</summary><p>Konuşmacı izin verirse evet. Kayıtlar ve slaytlar topluluk kanallarında paylaşılır.</p></details>
+      </div>
+    </section>
+
+    <section id="katil">
+      <div class="wrap">
+        <div class="cta">
+          <h2>Aramıza katıl</h2>
+          <p>Etkinlik duyuruları, konuşmacı çağrıları ve iş ilanları için bize yaz. Listeye ekleyelim, ilk meetup'ta görüşelim.</p>
+          <div class="btns">
+            <a class="btn primary" href="mailto:merhaba@ankaradevs.com?subject=AnkaraDevs%27e%20kat%C4%B1lmak%20istiyorum">merhaba@ankaradevs.com</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <span>© 2026 AnkaraDevs · Gönüllü topluluk</span>
+      <span>Ankara'da ❤️ ile yapıldı</span>
+    </div>
+  </footer>
+</body>
+</html>

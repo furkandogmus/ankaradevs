@@ -1,0 +1,7 @@
+{
+  "name": "Furkan Doğmuş",
+  "github": "furkandogmus",
+  "title": "DevOps / SRE Engineer",
+  "bio": "Hacettepe Üniversitesi Bilgisayar Mühendisliği mezunu. Bulut altyapısı, Kubernetes ve otomasyon üzerine çalışıyorum.",
+  "skills": ["AWS", "Kubernetes", "Terraform", "Go", "TypeScript"]
+}
